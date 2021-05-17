@@ -1,0 +1,31 @@
+extends ../layouts/LayoutTheme
+include ../mixins/home/dashboard-alt/CardStatistics
+include ../mixins/home/dashboard-alt/CardDipositeStatus
+include ../mixins/home/dashboard-alt/CardPaymentChart
+include ../mixins/home/dashboard-alt/CardRecentPurchaseTable
+include ../mixins/home/dashboard-alt/CardActiveUserChart
+include ../mixins/home/dashboard-alt/CardWorldMap
+
+prepend styles
+  link(href=`${CWD}vendors/leaflet/leaflet.css`, rel='stylesheet')
+  link(href=`${CWD}vendors/leaflet.markercluster/MarkerCluster.css`, rel='stylesheet')
+  link(href=`${CWD}vendors/leaflet.markercluster/MarkerCluster.Default.css`, rel='stylesheet')
+
+prepend scripts
+  script(src=`${CWD}vendors/chart/Chart.min.js`)
+  script(src=`${CWD}vendors/leaflet/leaflet.js`)
+  script(src=`${CWD}vendors/leaflet.markercluster/leaflet.markercluster.js`)
+  script(src=`${CWD}vendors/leaflet.tilelayer.colorfilter/leaflet-tilelayer-colorfilter.min.js`)
+  script(src=`${CWD}vendors/countup/countUp.umd.js`)
+
+append content
+  +CardPaymentChart.mb-3
+  +CardDipositeStatus.mb-3
+  +CardStatistics
+  +CardRecentPurchaseTable
+  .row.g-0
+    .col-lg-4.pe-lg-2
+      +CardActiveUserChart
+    .col-lg-8.ps-lg-2
+      +CardWorldMap.mt-3.mt-lg-0
+
