@@ -6,7 +6,7 @@ from bokeh.layouts import layout
 import pandas as pd
 
 # COVID_log
-df_conf = pd.read_csv('datas/코로나 일별 확진자 수 전처리 후파일.csv')
+df_conf = pd.read_csv('datas_temp/코로나 일별 확진자 수 전처리 후파일.csv')
 conf_date = pd.to_datetime(df_conf['date'], format='%Y%m%d', errors='ignore')
 
 conf_data = {'conf_num': df_conf['confirmed'], 'conf_date': conf_date}
@@ -36,3 +36,4 @@ toggle.js_link('active', COVID_log, 'visible')
 show(layout([p_DateConfirmed], [toggle]))
 
 # COVID_log finish
+
