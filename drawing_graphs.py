@@ -18,14 +18,14 @@ source = ColumnDataSource(data=conf_data)
 
 
 p_DateConfirmed = figure(
-    tools='',
     sizing_mode="stretch_width",
     max_width=500,
     plot_height=250,
-    x_axis_type="datetime"
+    x_axis_type="datetime",
+    tools=''
 )
 
-COVID_log = p_DateConfirmed.line(
+Graph_COVIDlog = p_DateConfirmed.line(
     x='conf_date',
     y='conf_num',
     color='#FC4F4F',
@@ -34,7 +34,7 @@ COVID_log = p_DateConfirmed.line(
 )
 
 toggle = Toggle(label="코로나 상황", button_type="success", active=True)
-toggle.js_link('active', COVID_log, 'visible')
+toggle.js_link('active', Graph_COVIDlog, 'visible')
 
 # ======================= COVID_log finish ==========================
 
@@ -54,11 +54,12 @@ mapper_WFH = linear_cmap(
 source = ColumnDataSource(data=WFH_data)
 
 p_WFH = figure(
-    tools='',
     sizing_mode="stretch_width",
     max_width=500,
     plot_height=250,
-    x_axis_type="datetime"
+    x_axis_type="datetime",
+    toolbar_location=None,
+    tools=''
 )
 
 Graph_WFH = p_WFH.circle(
@@ -70,5 +71,30 @@ Graph_WFH = p_WFH.circle(
     source=source
 )
 
-show(layout([p_DateConfirmed], [toggle], [p_WFH]))
+
 # ================== Work From Home finish ==========================
+
+# ==================== Restaurant ===================================
+
+Restaurant_month = ['Jan', 'Feb', 'Mar', 'Apr', 'May']
+Restaurant_sales = [13.2, 12.3, 11.3, 13.4, 16.2, 14.2]
+
+p_Restaurant = figure(
+    x_range=Restaurant_month,
+    max_width=500,
+    plot_height=250,
+    toolbar_location=None,
+    tools=''
+)
+
+Graph_Restaurant = p_Restaurant.vbar(
+    x=Restaurant_month,
+    top=Restaurant_sales,
+    width=0.9
+)
+
+p_Restaurant.xgrid.grid_line_color = None
+p_Restaurant.y_range.start = 10
+
+show(layout([p_DateConfirmed], [toggle], [p_WFH], [p_Restaurant]))
+# ==================== Restaurant finish =================================
