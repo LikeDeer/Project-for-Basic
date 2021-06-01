@@ -19,6 +19,5 @@ def Sonik():
     sonik= DataFrame(df_print)
     sonik.to_csv('C:\\Users\\Asus\\Desktop\\2020 1분기 전처리 후파일\\2020_1분기_포괄손익계산서_전처리_후.csv')
 
-
 Jaemu()
 Sonik()
