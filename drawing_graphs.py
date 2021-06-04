@@ -6,7 +6,10 @@ from bokeh.layouts import layout
 from bokeh.palettes import Spectral6
 from bokeh.transform import linear_cmap
 from bokeh.embed import components
+from flask import Flask, render_template
 import pandas as pd
+
+# app = Flask(__name__)
 
 # =========================== COVID_log ===========================
 df_conf = pd.read_csv('datas_temp/코로나 일별 확진자 수 전처리 후파일.csv')
@@ -72,6 +75,8 @@ Graph_WFH = p_WFH.circle(
 )
 
 
+
+
 # ================== Work From Home finish ==========================
 
 # ==================== Restaurant ===================================
@@ -96,5 +101,28 @@ Graph_Restaurant = p_Restaurant.vbar(
 p_Restaurant.xgrid.grid_line_color = None
 p_Restaurant.y_range.start = 10
 
-show(layout([p_DateConfirmed], [toggle], [p_WFH], [p_Restaurant]))
-# ==================== Restaurant finish =================================
+# ==================== Restaurant finish ==========================
+
+# show(layout([p_DateConfirmed], [toggle], [p_WFH], [p_Restaurant]))
+
+# script_COVID, div_COVID = components(p_DateConfirmed)
+# script_WFH, div_WFH = components(p_WFH)
+# script_Restaurant, div_Restaurant = components(p_Restaurant)
+
+
+# @app.route('/covid', methods=["GET", "POST"])
+# def covid():
+#     return render_template("covid.html", script_COVID=script_COVID, div_COVID=div_COVID)
+
+
+# @app.route('/home', methods=["GET", "POST"])
+# def home():
+#     return render_template("home.html", script_WFH=script_WFH, div_WFH=div_WFH)
+
+
+# @app.route('/rest', methods=["GET", "POST"])
+# def rest():
+#     return render_template("rest.html", script_Restaurant=script_Restaurant, div_Restaurant=div_Restaurant)
+
+# if __name__ == "__main__":
+#     app.run(host="0.0.0.0", debug=True, port=5000)
