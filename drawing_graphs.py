@@ -173,11 +173,11 @@ p_Credit.legend.click_policy = "hide"
 
 show(layout([p_DateConfirmed], [p_WFH], [toggle1], [p_Restaurant], [p_Credit]))
 
-# script_COVID, div_COVID = components(p_DateConfirmed)
-# script_WFH, div_WFH = components(p_WFH)
-# script_Restaurant, div_Restaurant = components(p_Restaurant)
-# script_Credit, div_Credit = components(p_Restaurant)
-# button_toggle_WFH = components(toggle1)
+script_COVID, div_COVID = components(p_DateConfirmed)
+script_WFH, div_WFH = components(p_WFH)
+script_Restaurant, div_Restaurant = components(p_Restaurant)
+script_Credit, div_Credit = components(p_Restaurant)
+button_toggle_WFH = components(toggle1)
 
 # @app.route('/covid', methods=["GET", "POST"])
 # def covid():
