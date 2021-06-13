@@ -6,6 +6,7 @@ import matplotlib.pyplot as plt
 from statsmodels.formula.api import ols
 from sklearn.linear_model import LinearRegression
 
+#카드 dataframe리턴하는 함수입니다. confirmed는 월별 코로나 확진자 수입니다.
 def card_request() :
  r_card = requests.get("http://34.64.187.187:1337/credits?")
  df_covid = pd.DataFrame({'Month':[202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012, 202101, 202102, 202103, 202104], 'Confirmed':[11, 3139, 6636, 979, 703, 1331, 1506, 5642, 3865, 2699, 7688, 26528, 17471, 11467, 13415, 18919]})
@@ -33,7 +34,7 @@ def card_request() :
  df2=pd.concat([x, y1, y2, y3, y4, y5, y6, y7, y8, y9, y10, y11, y12, y13], axis=1)
  return df2
  
-
+#카드 선형분석 결과를 리턴하는 함수입니다 dataframe으로 카테고리, 절편, 기울기 순으로 저장되어있습니다.
 def card_linear() :
  r_card = requests.get("http://34.64.187.187:1337/credits?")
  df_covid = pd.DataFrame({'Month':[202001, 202002, 202003, 202004, 202005, 202006, 202007, 202008, 202009, 202010, 202011, 202012, 202101, 202102, 202103, 202104], 'Confirmed':[11, 3139, 6636, 979, 703, 1331, 1506, 5642, 3865, 2699, 7688, 26528, 17471, 11467, 13415, 18919]})
@@ -91,7 +92,19 @@ def card_linear() :
               ,line_fitter11.intercept_,line_fitter12.intercept_,line_fitter13.intercept_],
                'coef':[line_fitter1.coef_,line_fitter2.coef_,line_fitter3.coef_,line_fitter4.coef_,line_fitter5.coef_,line_fitter6.coef_,
                line_fitter7.coef_,line_fitter8.coef_,line_fitter9.coef_,line_fitter10.coef_,line_fitter11.coef_,line_fitter12.coef_,line_fitter13.coef_]})
- print(df)
- return df
 
-card_linear()
+def qs18_1(company):
+ url = "http://34.64.187.187:1337/18-1-qs?Com="
+ r_qs18_1 = requests.get(url+company)
+ list_qs18_1 = r_qs18_1.json()
+
+ df_qs18_1_pre = pd.DataFrame(list_qs18_1)
+ df_qs18_1 = df_qs18_1_pre.iloc[:,[0,2, 3, 4]]
+ print(df_qs18_1)
+ return df_qs18_1
+
+
+try :
+    qs18_1('eg')
+except :
+    print("상장되지 않은 회사입니다.")
