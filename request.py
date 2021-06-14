@@ -92,6 +92,8 @@ def card_linear() :
               ,line_fitter11.intercept_,line_fitter12.intercept_,line_fitter13.intercept_],
                'coef':[line_fitter1.coef_,line_fitter2.coef_,line_fitter3.coef_,line_fitter4.coef_,line_fitter5.coef_,line_fitter6.coef_,
                line_fitter7.coef_,line_fitter8.coef_,line_fitter9.coef_,line_fitter10.coef_,line_fitter11.coef_,line_fitter12.coef_,line_fitter13.coef_]})
+ 
+ return df
 
 def qs18_1(company):
  url = "http://34.64.187.187:1337/18-1-qs?Com="

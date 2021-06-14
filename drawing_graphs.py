@@ -1,5 +1,6 @@
 from bokeh.io import show
 from bokeh.models.sources import ColumnDataSource
+from bokeh.models.tools import BoxZoomTool, ResetTool
 from bokeh.plotting import figure
 from bokeh.models import Toggle
 from bokeh.layouts import layout
@@ -8,6 +9,7 @@ from bokeh.transform import linear_cmap
 from bokeh.embed import components
 from flask import Flask, render_template
 import pandas as pd
+from request import card_request, card_linear, qs18_1
 
 # app = Flask(__name__)
 
@@ -25,7 +27,7 @@ p_DateConfirmed = figure(
     max_width=500,
     plot_height=250,
     x_axis_type="datetime",
-    toolbar_location=None,
+    toolbar_location=None,  
     tools=''
 )
 
@@ -88,6 +90,7 @@ Graph_COVIDlog = p_WFH.line(
 
 toggle1 = Toggle(label="코로나 상황", button_type="warning", active=True)
 toggle1.js_link('active', Graph_COVIDlog, 'visible')
+
 # ================== Work From Home finish ==========================
 
 # ==================== Restaurant ===================================
@@ -111,37 +114,29 @@ Graph_Restaurant = p_Restaurant.vbar(
 
 p_Restaurant.xgrid.grid_line_color = None
 p_Restaurant.y_range.start = 10
-# ==================== Restaurant finish ==========================
+
+# ==================== Restaurant finish ============================
 
 # ==================== Credit =======================================
 
-df_Credit = pd.read_excel('무상데이터상품_20200804.xlsx')
-Credit_date = pd.to_datetime(df_Credit['이용일자'], format='%Y%m%d', errors='ignore')
-print(Credit_date)
-p_Credit = figure(
-    sizing_mode="stretch_width",
-    toolbar_location=None,
-    tools='',
-    x_axis_type="datetime"
-)
+df_Credit1 = card_request()
+df_Credit2 = card_linear()
 
-df_Credit_List = [
-    df_Credit[df_Credit['업종대분류'] == '가전/가구'],
-    df_Credit[df_Credit['업종대분류'] == '가정생활/서비스'],
-    df_Credit[df_Credit['업종대분류'] == '미용'],
-    df_Credit[df_Credit['업종대분류'] == '스포츠/문화/레저'],
-    df_Credit[df_Credit['업종대분류'] == '여행/교통'],
-    df_Credit[df_Credit['업종대분류'] == '요식/유흥'],
-    df_Credit[df_Credit['업종대분류'] == '유통'],
-    df_Credit[df_Credit['업종대분류'] == '음/식료품'],
-    df_Credit[df_Credit['업종대분류'] == '의료'],
-    df_Credit[df_Credit['업종대분류'] == '자동차'],
-    df_Credit[df_Credit['업종대분류'] == '주유'],
-    df_Credit[df_Credit['업종대분류'] == '패션/잡화']
-]
-df_Credit_Name = (
+for x in [1000, 2000, 3000, 4000, 5000]:               # adding linear regressed data(df_Credit2) to dataframe(df_Credit1)
+    y = [x]
+    for i in range(0, 13):
+        y.append(float(df_Credit2.loc[i, 'coef']) * x + df_Credit2.loc[i, 'y_intercept'])
+    df_Credit1 = df_Credit1.append(pd.Series(y, index=df_Credit1.columns), ignore_index=True)
+
+df_Credit1 = df_Credit1.sort_values(by=['Confirmed_covid19'], axis=0)
+
+print(df_Credit1)
+
+df_Credit1_columns = df_Credit1.columns = [
+    'Confirmed_covid19',
     '가전/가구',
     '가정생활/서비스',
+    '교육/학원',
     '미용',
     '스포츠/문화/레저',
     '여행/교통',
@@ -152,14 +147,24 @@ df_Credit_Name = (
     '자동차',
     '주유',
     '패션/잡화'
+]
+
+del df_Credit1_columns[0]
+
+source = ColumnDataSource(data=df_Credit1)
+
+p_Credit = figure(
+    sizing_mode="stretch_width",
+    toolbar_location='below',
+    tools=[BoxZoomTool(), ResetTool()],
+    x_axis_label="COVID-19 확진",
+    y_axis_label="카드이용건수(천)"
 )
 
-for dfList, dfName, color in zip(df_Credit_List, df_Credit_Name, Category20c_13):
-    Credit_data = {'Credit_date': Credit_date, 'Credit_num': dfList['카드결제건수(천건)']}
-    source = ColumnDataSource(data=Credit_data)
+for dfName, color in zip(df_Credit1_columns, Category20c_13):
     p_Credit.line(
-        x='Credit_date',
-        y='Credit_num',
+        x='Confirmed_covid19',
+        y=dfName,
         line_width=2,
         color=color,
         alpha=0.8,
@@ -167,17 +172,83 @@ for dfList, dfName, color in zip(df_Credit_List, df_Credit_Name, Category20c_13)
         source=source
     )
 
-p_Credit.legend.location = "top_left"
 p_Credit.legend.click_policy = "hide"
 
+# df_Credit = pd.read_excel('무상데이터상품_20200804.xlsx')
+# Credit_date = pd.to_datetime(df_Credit['이용일자'], format='%Y%m%d', errors='ignore')
+# print(Credit_date)
+# p_Credit = figure(
+#     sizing_mode="stretch_width",
+#     toolbar_location=None,
+#     tools='',
+#     x_axis_type="datetime"
+# )
+
+# df_Credit_List = [
+#     df_Credit[df_Credit['업종대분류'] == '가전/가구'],
+#     df_Credit[df_Credit['업종대분류'] == '가정생활/서비스'],
+#     df_Credit[df_Credit['업종대분류'] == '미용'],
+#     df_Credit[df_Credit['업종대분류'] == '스포츠/문화/레저'],
+#     df_Credit[df_Credit['업종대분류'] == '여행/교통'],
+#     df_Credit[df_Credit['업종대분류'] == '요식/유흥'],
+#     df_Credit[df_Credit['업종대분류'] == '유통'],
+#     df_Credit[df_Credit['업종대분류'] == '음/식료품'],
+#     df_Credit[df_Credit['업종대분류'] == '의료'],
+#     df_Credit[df_Credit['업종대분류'] == '자동차'],
+#     df_Credit[df_Credit['업종대분류'] == '주유'],
+#     df_Credit[df_Credit['업종대분류'] == '패션/잡화']
+# ]
+# df_Credit_Name = (
+#     '가전/가구',
+#     '가정생활/서비스',
+#     '미용',
+#     '스포츠/문화/레저',
+#     '여행/교통',
+#     '요식/유흥',
+#     '유통',
+#     '음/식료품',
+#     '의료',
+#     '자동차',
+#     '주유',
+#     '패션/잡화'
+# )
+
+# for dfList, dfName, color in zip(df_Credit_List, df_Credit_Name, Category20c_13):
+#     Credit_data = {'Credit_date': Credit_date, 'Credit_num': dfList['카드결제건수(천건)']}
+#     source = ColumnDataSource(data=Credit_data)
+#     p_Credit.line(
+#         x='Credit_date',
+#         y='Credit_num',
+#         line_width=2,
+#         color=color,
+#         alpha=0.8,
+#         legend_label=dfName,
+#         source=source
+#     )
+
+# p_Credit.legend.location = "top_left"
+# p_Credit.legend.click_policy = "hide"
+
+# ======================= Credit finish ============================
+
+# ======================= company ==================================
+
+try :
+    df_Company = qs18_1('eg')
+except :
+    print("상장되지 않은 회사입니다.")
+
+print(df_Company)
+
+# ======================= company finish ===========================
 
 show(layout([p_DateConfirmed], [p_WFH], [toggle1], [p_Restaurant], [p_Credit]))
 
 script_COVID, div_COVID = components(p_DateConfirmed)
 script_WFH, div_WFH = components(p_WFH)
 script_Restaurant, div_Restaurant = components(p_Restaurant)
-script_Credit, div_Credit = components(p_Restaurant)
-script_toggle1_WFH, div_toggle1_WFH = components(toggle1)
+script_Credit, div_Credit = components(p_Credit)
+script_toggle1, div_toggle1 = components(toggle1)
 
 # @app.route('/covid', methods=["GET", "POST"])
 # def covid():
@@ -186,7 +257,7 @@ script_toggle1_WFH, div_toggle1_WFH = components(toggle1)
 
 # @app.route('/home', methods=["GET", "POST"])
 # def home():
-#     return render_template("home.html", script_WFH=script_WFH, div_WFH=div_WFH, button_toggle_WFH=button_toggle_WFH)
+#     return render_template("home.html", script_WFH=script_WFH, div_WFH=div_WFH, script_toggle1=script_toggle1, div_toggle1=div_toggle1)
 
 
 # @app.route('/rest', methods=["GET", "POST"])
