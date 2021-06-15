@@ -7,7 +7,7 @@
 from bokeh.io import show
 from bokeh.models.sources import ColumnDataSource
 from bokeh.plotting import figure
-from bokeh.models import Toggle, Range1d, LinearAxis, Legend
+from bokeh.models import Toggle, Range1d, LinearAxis, Legend, TableColumn, DataTable
 from bokeh.layouts import layout
 from bokeh.models.tools import HoverTool
 from bokeh.palettes import Spectral6, Category20c_13, Category20_17, Colorblind7
@@ -358,11 +358,23 @@ try :
 except :
     print("상장되지 않은 회사입니다.")
 
-print(df_Company)
+source = ColumnDataSource(df_Company)
+
+columns = [TableColumn(field="Com", title="Com"),
+           TableColumn(field="Sep", title="Sep"),
+           TableColumn(field="Cap", title="Cap")]
+data_table_EG = DataTable(
+    source=source,
+    columns=columns,
+    width=400,
+    height=280,
+    editable=False,
+    reorderable=False
+)
 
 # ======================= company finish ===========================
 
-show(layout([p_DateConfirmed, p_DateConfirmed2], [p_WFH, p_WFH2], [toggle1, toggle2], [p_Restaurant], [p_Credit]))
+show(layout([p_DateConfirmed, p_DateConfirmed2], [p_WFH, p_WFH2], [toggle1, toggle2], [p_Restaurant], [p_Credit], [data_table_EG]))
 
 script_COVID, div_COVID = components(p_DateConfirmed)
 script_COVID2, div_COVID2 = components(p_DateConfirmed2)
@@ -370,6 +382,8 @@ script_WFH, div_WFH = components(p_WFH)
 script_Restaurant, div_Restaurant = components(p_Restaurant)
 script_Credit, div_Credit = components(p_Credit)
 script_toggle1, div_toggle1 = components(toggle1)
+script_toggle2, div_toggle2 = components(toggle2)
+script_DataTable_EG, div_DataTable_EG = components(data_table_EG)
 
 # @app.route('/covid', methods=["GET", "POST"])
 # def covid():
