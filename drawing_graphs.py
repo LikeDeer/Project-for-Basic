@@ -7,16 +7,16 @@
 from bokeh.io import show
 from bokeh.models.sources import ColumnDataSource
 from bokeh.plotting import figure
-from bokeh.models import Toggle, Range1d, LinearAxis
+from bokeh.models import Toggle, Range1d, LinearAxis, Legend
 from bokeh.layouts import layout
 from bokeh.models.tools import HoverTool
-from bokeh.palettes import Spectral6, Category20c_13, Category20_17
+from bokeh.palettes import Spectral6, Category20c_13, Category20_17, Colorblind7
 from bokeh.transform import linear_cmap
 from bokeh.embed import components
 from bokeh.transform import dodge
 # from flask import Flask, render_template
 import pandas as pd
-from request import card_request, card_linear, qs18_1
+from request import *
 
 # app = Flask(__name__)
 
@@ -103,20 +103,27 @@ p_DateConfirmed2.add_tools(hover)
 
 # ======================= Work From Home ============================
 
-df_WFH = pd.read_csv('재택지수 전처리 후파일.csv')
+df_WFH = house()
 df_conf1 = pd.read_csv('코로나 일별 확진자 수 전처리 후파일.csv')
 df_conf1 = df_conf1[df_conf1['date'] <= 20200914]
-WFH_date = pd.to_datetime(df_WFH['dt'], format='%Y%m%d', errors='ignore')
+WFH_date = pd.to_datetime(df_WFH['date'], format='%Y%m%d', errors='ignore')
 WFH_COVID_date = pd.to_datetime(df_conf1['date'], format='%Y%m%d', errors='ignore')
-WFH_data = {'WFH_ratio': df_WFH['h0d1h1_dur_r'], 'WFH_date': WFH_date}
+WFH_data = {'WFH_date': WFH_date,
+            'WFH_ratio1': df_WFH['week_n_i'],
+            'WFH_ratio2': df_WFH['week_d_i'],
+            'WFH_ratio3': df_WFH['holiday_n_i'],
+            'WFH_ratio4': df_WFH['week_n_o'],
+            'WFH_ratio5': df_WFH['week_d_o'],
+            'WFH_ratio6': df_WFH['holiday_n_o'],
+            'WFH_ratio7': df_WFH['holiday_d_o']}
 WFH_COVID_data = {'conf1_date': WFH_COVID_date, 'conf1_num': df_conf1['confirmed']/800}
 
-mapper_WFH = linear_cmap(
-    field_name='WFH_ratio',
-    palette=Spectral6,
-    low=min(WFH_data['WFH_ratio']),
-    high=max(WFH_data['WFH_ratio'])
-)
+# mapper_WFH = linear_cmap(
+#     field_name='WFH_ratio',
+#     palette=Spectral6,
+#     low=min(WFH_data['WFH_ratio']),
+#     high=max(WFH_data['WFH_ratio'])
+# )
 
 source = ColumnDataSource(data=WFH_data)
 source1 = ColumnDataSource(data=WFH_COVID_data)
@@ -131,11 +138,29 @@ p_WFH = figure(
 )
 styling_axis(p_WFH)
 
-Graph_WFH = p_WFH.circle(
+p_WFH.circle(
     x='WFH_date',
-    y='WFH_ratio',
-    line_color=mapper_WFH,
-    color=mapper_WFH,
+    y='WFH_ratio1',
+    line_color=Colorblind7[0],
+    color=Colorblind7[0],
+    alpha=0.5,
+    source=source
+)
+
+p_WFH.circle(
+    x='WFH_date',
+    y='WFH_ratio2',
+    line_color=Colorblind7[1],
+    color=Colorblind7[1],
+    alpha=0.5,
+    source=source
+)
+
+p_WFH.circle(
+    x='WFH_date',
+    y='WFH_ratio3',
+    line_color=Colorblind7[2],
+    color=Colorblind7[2],
     alpha=0.5,
     source=source
 )
@@ -150,6 +175,65 @@ Graph_COVIDlog = p_WFH.line(
 
 toggle1 = Toggle(label="코로나 상황", button_type="warning", active=True)
 toggle1.js_link('active', Graph_COVIDlog, 'visible')
+
+
+p_WFH2 = figure(
+    y_range=(0.4, 0.5),
+    sizing_mode="stretch_width",
+    max_width=500,
+    plot_height=250,
+    x_axis_type="datetime",
+    toolbar_location=None,
+    tools=''
+)
+styling_axis(p_WFH2)
+
+p_WFH2.circle(
+    x='WFH_date',
+    y='WFH_ratio4',
+    line_color=Colorblind7[3],
+    color=Colorblind7[3],
+    alpha=0.5,
+    source=source
+)
+
+p_WFH2.circle(
+    x='WFH_date',
+    y='WFH_ratio5',
+    line_color=Colorblind7[4],
+    color=Colorblind7[4],
+    alpha=0.5,
+    source=source
+)
+
+p_WFH2.circle(
+    x='WFH_date',
+    y='WFH_ratio6',
+    line_color=Colorblind7[5],
+    color=Colorblind7[5],
+    alpha=0.5,
+    source=source
+)
+
+p_WFH2.circle(
+    x='WFH_date',
+    y='WFH_ratio7',
+    line_color=Colorblind7[6],
+    color=Colorblind7[6],
+    alpha=0.5,
+    source=source
+)
+
+Graph_COVIDlog2 = p_WFH2.line(
+    x='conf1_date',
+    y='conf1_num',
+    color='#FC4F4F',
+    alpha=0.5,
+    source=source1
+)
+
+toggle2 = Toggle(label="코로나 상황", button_type="warning", active=True)
+toggle2.js_link('active', Graph_COVIDlog2, 'visible')
 
 # ================== Work From Home finish ==========================
 
@@ -207,8 +291,6 @@ for x in [1000, 2000, 3000, 4000, 5000]:               # adding linear regressed
 
 df_Credit1 = df_Credit1.sort_values(by=['Confirmed_covid19'], axis=0)
 
-print(df_Credit1)
-
 df_Credit1_columns = df_Credit1.columns = [
     'Confirmed_covid19',
     '가전/가구',
@@ -238,6 +320,7 @@ p_Credit = figure(
     y_axis_label="카드이용건수(천)"
 )
 styling_axis(p_Credit)
+p_Credit.add_layout(Legend(), 'right')
 
 for dfName, color in zip(df_Credit1_columns, Category20c_13):
     p_Credit.line(
@@ -267,7 +350,7 @@ print(df_Company)
 
 # ======================= company finish ===========================
 
-show(layout([p_DateConfirmed], [p_WFH], [toggle1], [p_Restaurant], [p_Credit], [p_DateConfirmed2]))
+show(layout([p_DateConfirmed, p_DateConfirmed2], [p_WFH, p_WFH2], [toggle1, toggle2], [p_Restaurant], [p_Credit]))
 
 script_COVID, div_COVID = components(p_DateConfirmed)
 script_COVID2, div_COVID2 = components(p_DateConfirmed2)
