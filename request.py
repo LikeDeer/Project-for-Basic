@@ -237,8 +237,5 @@ def house():
  list_c = r.json()
  df_pre = pd.DataFrame(list_c)
  df = df_pre.iloc[:,[1, 2, 3, 4, 5, 6, 7, 8]]
- print(df)
  
- return 0
-
-house()
+ return df
