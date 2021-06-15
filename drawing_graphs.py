@@ -1,10 +1,16 @@
+# ++++++++++++++++++++++++++++++++++++++++++++++++++
+#  writer : Jeong Junho
+#  githhub : github.com/LikeDee
+#  contents : 5 visualizations
+# ++++++++++++++++++++++++++++++++++++++++++++++++++
+
 from bokeh.io import show
 from bokeh.models.sources import ColumnDataSource
 from bokeh.models.tools import BoxZoomTool, ResetTool
 from bokeh.plotting import figure
-from bokeh.models import Toggle
+from bokeh.models import Toggle, Range1d, LinearAxis
 from bokeh.layouts import layout
-from bokeh.palettes import Spectral6, Category20c_13
+from bokeh.palettes import Spectral6, Category20c_13, Category20_17
 from bokeh.transform import linear_cmap
 from bokeh.embed import components
 from flask import Flask, render_template
@@ -17,9 +23,7 @@ from request import card_request, card_linear, qs18_1
 
 df_conf = pd.read_csv('코로나 일별 확진자 수 전처리 후파일.csv')
 conf_date = pd.to_datetime(df_conf['date'], format='%Y%m%d', errors='ignore')
-
 conf_data = {'conf_num': df_conf['confirmed'], 'conf_date': conf_date}
-
 source = ColumnDataSource(data=conf_data)
 
 p_DateConfirmed = figure(
@@ -39,6 +43,30 @@ p_DateConfirmed.line(
     source=source
 )
 
+# df_conf2 = pd.read_csv('covid_19_monthly.csv')
+# conf2_date = pd.to_datetime(df_conf2['month'], format='%Y%m', errors='ignore')
+# conf2_data = {'conf2_num': df_conf2['confirmed'], 'conf2_date': conf2_date}
+# source = ColumnDataSource(data=conf2_data)
+
+# p_DateConfirmed2 = figure(
+#     sizing_mode="stretch_width",
+#     max_width=500,
+#     plot_height=250,
+#     x_axis_type="datetime",
+#     toolbar_location=None,
+#     tools=''
+# )
+
+# p_DateConfirmed2.hbar(
+#     y='conf2_date',
+#     right='conf2_num',
+#     fill_color=Category20_17,
+#     line_color='white',
+#     line_width=0.4,
+#     alpha=0.9,
+#     source=source
+# )
+
 # ======================= COVID_log finish ==========================
 
 # ======================= Work From Home ============================
@@ -48,17 +76,14 @@ df_conf1 = pd.read_csv('코로나 일별 확진자 수 전처리 후파일.csv')
 df_conf1 = df_conf1[df_conf1['date'] <= 20200914]
 WFH_date = pd.to_datetime(df_WFH['dt'], format='%Y%m%d', errors='ignore')
 WFH_COVID_date = pd.to_datetime(df_conf1['date'], format='%Y%m%d', errors='ignore')
-
 WFH_data = {'WFH_ratio': df_WFH['h0d1h1_dur_r'], 'WFH_date': WFH_date}
 WFH_COVID_data = {'conf1_date': WFH_COVID_date, 'conf1_num': df_conf1['confirmed']/800}
-
 mapper_WFH = linear_cmap(
     field_name='WFH_ratio',
     palette=Spectral6,
     low=min(WFH_data['WFH_ratio']),
     high=max(WFH_data['WFH_ratio'])
 )
-
 source = ColumnDataSource(data=WFH_data)
 source1 = ColumnDataSource(data=WFH_COVID_data)
 
@@ -95,7 +120,7 @@ toggle1.js_link('active', Graph_COVIDlog, 'visible')
 
 # ==================== Restaurant ===================================
 
-Restaurant_month = ['Jan', 'Feb', 'Mar', 'Apr', 'May']
+Restaurant_month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun']
 Restaurant_sales = [13.2, 12.3, 11.3, 13.4, 16.2, 14.2]
 
 p_Restaurant = figure(
@@ -106,11 +131,28 @@ p_Restaurant = figure(
     tools=''
 )
 
-Graph_Restaurant = p_Restaurant.vbar(
+p_Restaurant.yaxis.axis_label = 'Restaurant'
+p_Restaurant.y_range = Range1d(start=0, end=20)
+
+p_Restaurant.vbar(
     x=Restaurant_month,
     top=Restaurant_sales,
     width=0.9
 )
+
+p_Restaurant.extra_y_ranges['Covid_month'] = Range1d(start=0, end=250)
+p_Restaurant.add_layout(LinearAxis(y_range_name='Covid_month', axis_label='Covid(명)'), 'right')
+
+p_Restaurant.line(
+    x=Restaurant_month,
+    y=[1, 108.2414, 214.0645, 32.63333, 22.67742, 44.36667],            # covid monthly data
+    line_width=3,
+    legend='월별 코로나 확진',
+    y_range_name='Covid_month',
+    color='#FC4F4F',
+)
+
+p_Restaurant.legend.click_policy = "hide"
 
 p_Restaurant.xgrid.grid_line_color = None
 p_Restaurant.y_range.start = 10
@@ -156,7 +198,7 @@ source = ColumnDataSource(data=df_Credit1)
 p_Credit = figure(
     sizing_mode="stretch_width",
     toolbar_location='below',
-    tools=[BoxZoomTool(), ResetTool()],
+    tools="pan,wheel_zoom,box_zoom,reset",
     x_axis_label="COVID-19 확진",
     y_axis_label="카드이용건수(천)"
 )
@@ -173,6 +215,8 @@ for dfName, color in zip(df_Credit1_columns, Category20c_13):
     )
 
 p_Credit.legend.click_policy = "hide"
+
+p_Credit.toolbar_location = 'above'
 
 # df_Credit = pd.read_excel('무상데이터상품_20200804.xlsx')
 # Credit_date = pd.to_datetime(df_Credit['이용일자'], format='%Y%m%d', errors='ignore')
