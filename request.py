@@ -93,6 +93,7 @@ def card_linear() :
                'coef':[line_fitter1.coef_,line_fitter2.coef_,line_fitter3.coef_,line_fitter4.coef_,line_fitter5.coef_,line_fitter6.coef_,
                line_fitter7.coef_,line_fitter8.coef_,line_fitter9.coef_,line_fitter10.coef_,line_fitter11.coef_,line_fitter12.coef_,line_fitter13.coef_]})
 
+ return df
 #2018-1분기 재무재표 dataframe을 return해주는 함수입니다.
 #try :
 #    qs18_1('eg')
