@@ -1,7 +1,7 @@
 # ++++++++++++++++++++++++++++++++++++++++++++++++++
 #  writer : Jeong Junho
-#  githhub : github.com/LikeDee
-#  contents : 5 visualizations
+#  githhub : github.com/LikeDeer
+#  contents : visualizations
 # ++++++++++++++++++++++++++++++++++++++++++++++++++
 
 from bokeh.io import show
@@ -14,11 +14,24 @@ from bokeh.palettes import Spectral6, Category20c_13, Category20_17
 from bokeh.transform import linear_cmap
 from bokeh.embed import components
 from bokeh.transform import dodge
-from flask import Flask, render_template
+# from flask import Flask, render_template
 import pandas as pd
 from request import card_request, card_linear, qs18_1
 
 # app = Flask(__name__)
+
+
+def styling_axis(plot):
+    plot.border_fill_color = "#3f464d"
+    plot.xaxis.axis_line_color = "white"
+    plot.xaxis.major_tick_line_color = "white"
+    plot.xaxis.minor_tick_line_color = "white"
+    plot.xaxis.major_label_text_color = "white"
+    plot.yaxis.axis_line_color = "white"
+    plot.yaxis.major_tick_line_color = "white"
+    plot.yaxis.minor_tick_line_color = "white"
+    plot.yaxis.major_label_text_color = "white"
+
 
 # =========================== COVID_log ===========================
 
@@ -32,9 +45,10 @@ p_DateConfirmed = figure(
     max_width=500,
     plot_height=250,
     x_axis_type="datetime",
-    toolbar_location=None,  
+    toolbar_location=None,
     tools=''
 )
+styling_axis(p_DateConfirmed)
 
 p_DateConfirmed.line(
     x='conf_date',
@@ -63,6 +77,7 @@ p_DateConfirmed2 = figure(
     toolbar_location=None,
     tools=''
 )
+styling_axis(p_DateConfirmed2)
 
 p_DateConfirmed2.hbar(
     y=dodge('months', -0.25, range=p_DateConfirmed2.y_range),
@@ -95,12 +110,14 @@ WFH_date = pd.to_datetime(df_WFH['dt'], format='%Y%m%d', errors='ignore')
 WFH_COVID_date = pd.to_datetime(df_conf1['date'], format='%Y%m%d', errors='ignore')
 WFH_data = {'WFH_ratio': df_WFH['h0d1h1_dur_r'], 'WFH_date': WFH_date}
 WFH_COVID_data = {'conf1_date': WFH_COVID_date, 'conf1_num': df_conf1['confirmed']/800}
+
 mapper_WFH = linear_cmap(
     field_name='WFH_ratio',
     palette=Spectral6,
     low=min(WFH_data['WFH_ratio']),
     high=max(WFH_data['WFH_ratio'])
 )
+
 source = ColumnDataSource(data=WFH_data)
 source1 = ColumnDataSource(data=WFH_COVID_data)
 
@@ -112,6 +129,7 @@ p_WFH = figure(
     toolbar_location=None,
     tools=''
 )
+styling_axis(p_WFH)
 
 Graph_WFH = p_WFH.circle(
     x='WFH_date',
@@ -147,7 +165,7 @@ p_Restaurant = figure(
     toolbar_location=None,
     tools=''
 )
-
+styling_axis(p_Restaurant)
 p_Restaurant.yaxis.axis_label = 'Restaurant'
 p_Restaurant.y_range = Range1d(start=0, end=20)
 
@@ -219,6 +237,7 @@ p_Credit = figure(
     x_axis_label="COVID-19 확진",
     y_axis_label="카드이용건수(천)"
 )
+styling_axis(p_Credit)
 
 for dfName, color in zip(df_Credit1_columns, Category20c_13):
     p_Credit.line(
@@ -234,61 +253,6 @@ for dfName, color in zip(df_Credit1_columns, Category20c_13):
 p_Credit.legend.click_policy = "hide"
 
 p_Credit.toolbar_location = 'above'
-
-# df_Credit = pd.read_excel('무상데이터상품_20200804.xlsx')
-# Credit_date = pd.to_datetime(df_Credit['이용일자'], format='%Y%m%d', errors='ignore')
-# print(Credit_date)
-# p_Credit = figure(
-#     sizing_mode="stretch_width",
-#     toolbar_location=None,
-#     tools='',
-#     x_axis_type="datetime"
-# )
-
-# df_Credit_List = [
-#     df_Credit[df_Credit['업종대분류'] == '가전/가구'],
-#     df_Credit[df_Credit['업종대분류'] == '가정생활/서비스'],
-#     df_Credit[df_Credit['업종대분류'] == '미용'],
-#     df_Credit[df_Credit['업종대분류'] == '스포츠/문화/레저'],
-#     df_Credit[df_Credit['업종대분류'] == '여행/교통'],
-#     df_Credit[df_Credit['업종대분류'] == '요식/유흥'],
-#     df_Credit[df_Credit['업종대분류'] == '유통'],
-#     df_Credit[df_Credit['업종대분류'] == '음/식료품'],
-#     df_Credit[df_Credit['업종대분류'] == '의료'],
-#     df_Credit[df_Credit['업종대분류'] == '자동차'],
-#     df_Credit[df_Credit['업종대분류'] == '주유'],
-#     df_Credit[df_Credit['업종대분류'] == '패션/잡화']
-# ]
-# df_Credit_Name = (
-#     '가전/가구',
-#     '가정생활/서비스',
-#     '미용',
-#     '스포츠/문화/레저',
-#     '여행/교통',
-#     '요식/유흥',
-#     '유통',
-#     '음/식료품',
-#     '의료',
-#     '자동차',
-#     '주유',
-#     '패션/잡화'
-# )
-
-# for dfList, dfName, color in zip(df_Credit_List, df_Credit_Name, Category20c_13):
-#     Credit_data = {'Credit_date': Credit_date, 'Credit_num': dfList['카드결제건수(천건)']}
-#     source = ColumnDataSource(data=Credit_data)
-#     p_Credit.line(
-#         x='Credit_date',
-#         y='Credit_num',
-#         line_width=2,
-#         color=color,
-#         alpha=0.8,
-#         legend_label=dfName,
-#         source=source
-#     )
-
-# p_Credit.legend.location = "top_left"
-# p_Credit.legend.click_policy = "hide"
 
 # ======================= Credit finish ============================
 
