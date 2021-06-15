@@ -43,29 +43,31 @@ p_DateConfirmed.line(
     source=source
 )
 
-# df_conf2 = pd.read_csv('covid_19_monthly.csv')
-# conf2_date = pd.to_datetime(df_conf2['month'], format='%Y%m', errors='ignore')
-# conf2_data = {'conf2_num': df_conf2['confirmed'], 'conf2_date': conf2_date}
-# source = ColumnDataSource(data=conf2_data)
+df_conf2 = pd.read_csv('covid_19_monthly.csv')
 
-# p_DateConfirmed2 = figure(
-#     sizing_mode="stretch_width",
-#     max_width=500,
-#     plot_height=250,
-#     x_axis_type="datetime",
-#     toolbar_location=None,
-#     tools=''
-# )
+p_DateConfirmed2 = figure(
+    sizing_mode="stretch_width",
+    max_width=500,
+    plot_height=250,
+    toolbar_location=None,
+    tools=''
+)
 
-# p_DateConfirmed2.hbar(
-#     y='conf2_date',
-#     right='conf2_num',
-#     fill_color=Category20_17,
-#     line_color='white',
-#     line_width=0.4,
-#     alpha=0.9,
-#     source=source
-# )
+source = ColumnDataSource(df_conf2)
+
+p_DateConfirmed2.hbar(
+    y=['Jan/20', 'Feb/20', 'Mar/20', 'Apr/20', 'May/20', 'Jun/20', 'Jul/20', 'Aug/20', 'Sep/20', 'Oct/20', 'Nov/20', 'Dec/20', 'Jan/21', 'Feb/21', 'Mar/21', 'Apr/21', 'May/21'],
+    right=df_conf2['confirmed'],
+    fill_color='red',
+    line_color='white',
+    line_width=0.4,
+    alpha=0.9,
+    source=source
+)
+
+# p_DateConfirmed2.xaxis.visible = False
+# p_DateConfirmed2.xgrid.visible = False
+# p_DateConfirmed2.ygrid.visible = False
 
 # ======================= COVID_log finish ==========================
 
@@ -286,7 +288,7 @@ print(df_Company)
 
 # ======================= company finish ===========================
 
-show(layout([p_DateConfirmed], [p_WFH], [toggle1], [p_Restaurant], [p_Credit]))
+show(layout([p_DateConfirmed], [p_WFH], [toggle1], [p_Restaurant], [p_Credit], [p_DateConfirmed2]))
 
 script_COVID, div_COVID = components(p_DateConfirmed)
 script_WFH, div_WFH = components(p_WFH)
