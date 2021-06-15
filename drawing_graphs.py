@@ -172,17 +172,16 @@ p_WFH.circle(
     source=source
 )
 
-Graph_COVIDlog = p_WFH.line(
+p_WFH.line(
     x='conf1_date',
     y='conf1_num',
     color='#FC4F4F',
     alpha=0.5,
+    legend_label='COVID 상황',
     source=source1
 )
 
-toggle1 = Toggle(label="코로나 상황", button_type="warning", active=True)
-toggle1.js_link('active', Graph_COVIDlog, 'visible')
-
+p_WFH.legend.click_policy = "hide"
 
 p_WFH2 = figure(
     y_range=(0.4, 0.5),
@@ -236,16 +235,16 @@ p_WFH2.circle(
     source=source
 )
 
-Graph_COVIDlog2 = p_WFH2.line(
+p_WFH2.line(
     x='conf1_date',
     y='conf2_num',
     color='#FC4F4F',
     alpha=0.5,
+    legend_label='COVID 상황',
     source=source1
 )
 
-toggle2 = Toggle(label="코로나 상황", button_type="warning", active=True)
-toggle2.js_link('active', Graph_COVIDlog2, 'visible')
+p_WFH2.legend.click_policy = "hide"
 
 # ================== Work From Home finish ==========================
 
@@ -374,15 +373,13 @@ data_table_EG = DataTable(
 
 # ======================= company finish ===========================
 
-show(layout([p_DateConfirmed, p_DateConfirmed2], [p_WFH, p_WFH2], [toggle1, toggle2], [p_Restaurant], [p_Credit], [data_table_EG]))
+show(layout([p_DateConfirmed, p_DateConfirmed2], [p_WFH, p_WFH2], [p_Restaurant], [p_Credit], [data_table_EG]))
 
 script_COVID, div_COVID = components(p_DateConfirmed)
 script_COVID2, div_COVID2 = components(p_DateConfirmed2)
 script_WFH, div_WFH = components(p_WFH)
 script_Restaurant, div_Restaurant = components(p_Restaurant)
 script_Credit, div_Credit = components(p_Credit)
-script_toggle1, div_toggle1 = components(toggle1)
-script_toggle2, div_toggle2 = components(toggle2)
 script_DataTable_EG, div_DataTable_EG = components(data_table_EG)
 
 # @app.route('/covid', methods=["GET", "POST"])
