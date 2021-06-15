@@ -116,7 +116,9 @@ WFH_data = {'WFH_date': WFH_date,
             'WFH_ratio5': df_WFH['week_d_o'],
             'WFH_ratio6': df_WFH['holiday_n_o'],
             'WFH_ratio7': df_WFH['holiday_d_o']}
-WFH_COVID_data = {'conf1_date': WFH_COVID_date, 'conf1_num': df_conf1['confirmed']/800}
+WFH_COVID_data = {'conf1_date': WFH_COVID_date,
+                  'conf1_num': df_conf1['confirmed']/1600 + 0.35,
+                  'conf2_num': df_conf1['confirmed']/8000 + 0.4}
 
 # mapper_WFH = linear_cmap(
 #     field_name='WFH_ratio',
@@ -129,6 +131,7 @@ source = ColumnDataSource(data=WFH_data)
 source1 = ColumnDataSource(data=WFH_COVID_data)
 
 p_WFH = figure(
+    y_range=(0.35, 0.8),
     sizing_mode="stretch_width",
     max_width=500,
     plot_height=250,
@@ -137,6 +140,7 @@ p_WFH = figure(
     tools=''
 )
 styling_axis(p_WFH)
+p_WFH.add_layout(Legend(), 'right')
 
 p_WFH.circle(
     x='WFH_date',
@@ -144,6 +148,7 @@ p_WFH.circle(
     line_color=Colorblind7[0],
     color=Colorblind7[0],
     alpha=0.5,
+    legend_label='평일야간재택',
     source=source
 )
 
@@ -153,6 +158,7 @@ p_WFH.circle(
     line_color=Colorblind7[1],
     color=Colorblind7[1],
     alpha=0.5,
+    legend_label='평일주간재택',
     source=source
 )
 
@@ -162,6 +168,7 @@ p_WFH.circle(
     line_color=Colorblind7[2],
     color=Colorblind7[2],
     alpha=0.5,
+    legend_label='휴일야간재택',
     source=source
 )
 
@@ -187,6 +194,7 @@ p_WFH2 = figure(
     tools=''
 )
 styling_axis(p_WFH2)
+p_WFH2.add_layout(Legend(), 'right')
 
 p_WFH2.circle(
     x='WFH_date',
@@ -194,6 +202,7 @@ p_WFH2.circle(
     line_color=Colorblind7[3],
     color=Colorblind7[3],
     alpha=0.5,
+    legend_label='평일야간외부활동',
     source=source
 )
 
@@ -203,7 +212,8 @@ p_WFH2.circle(
     line_color=Colorblind7[4],
     color=Colorblind7[4],
     alpha=0.5,
-    source=source
+    legend_label='평일주간외부활동',
+    source=source,
 )
 
 p_WFH2.circle(
@@ -212,6 +222,7 @@ p_WFH2.circle(
     line_color=Colorblind7[5],
     color=Colorblind7[5],
     alpha=0.5,
+    legend_label='휴일야간외부활동',
     source=source
 )
 
@@ -221,12 +232,13 @@ p_WFH2.circle(
     line_color=Colorblind7[6],
     color=Colorblind7[6],
     alpha=0.5,
+    legend_label='휴일주간외부활동',
     source=source
 )
 
 Graph_COVIDlog2 = p_WFH2.line(
     x='conf1_date',
-    y='conf1_num',
+    y='conf2_num',
     color='#FC4F4F',
     alpha=0.5,
     source=source1
