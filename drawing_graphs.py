@@ -6,13 +6,14 @@
 
 from bokeh.io import show
 from bokeh.models.sources import ColumnDataSource
-from bokeh.models.tools import BoxZoomTool, ResetTool
 from bokeh.plotting import figure
 from bokeh.models import Toggle, Range1d, LinearAxis
 from bokeh.layouts import layout
+from bokeh.models.tools import HoverTool
 from bokeh.palettes import Spectral6, Category20c_13, Category20_17
 from bokeh.transform import linear_cmap
 from bokeh.embed import components
+from bokeh.transform import dodge
 from flask import Flask, render_template
 import pandas as pd
 from request import card_request, card_linear, qs18_1
@@ -44,30 +45,44 @@ p_DateConfirmed.line(
 )
 
 df_conf2 = pd.read_csv('covid_19_monthly.csv')
+confirmed_list = df_conf2['confirmed'].values.tolist()
+y = ['Jan/20', 'Feb/20', 'Mar/20', 'Apr/20', 'May/20', 'Jun/20', 'Jul/20', 'Aug/20', 'Sep/20', 'Oct/20', 'Nov/20', 'Dec/20', 'Jan/21', 'Feb/21', 'Mar/21', 'Apr/21', 'May/21']
+
+conf2_data = {
+    'months': y,
+    'confirmed': confirmed_list,
+    'color': Category20_17
+}
+
+source = ColumnDataSource(data=conf2_data)
 
 p_DateConfirmed2 = figure(
+    y_range=y,
+    x_range=(0, 1000),
     sizing_mode="stretch_width",
-    max_width=500,
-    plot_height=250,
     toolbar_location=None,
     tools=''
 )
 
-source = ColumnDataSource(df_conf2)
-
 p_DateConfirmed2.hbar(
-    y=['Jan/20', 'Feb/20', 'Mar/20', 'Apr/20', 'May/20', 'Jun/20', 'Jul/20', 'Aug/20', 'Sep/20', 'Oct/20', 'Nov/20', 'Dec/20', 'Jan/21', 'Feb/21', 'Mar/21', 'Apr/21', 'May/21'],
-    right=df_conf2['confirmed'],
-    fill_color='red',
-    line_color='white',
-    line_width=0.4,
-    alpha=0.9,
-    source=source
+    y=dodge('months', -0.25, range=p_DateConfirmed2.y_range),
+    right='confirmed',
+    height=0.3,
+    source=source,
+    color='color',
 )
 
-# p_DateConfirmed2.xaxis.visible = False
-# p_DateConfirmed2.xgrid.visible = False
-# p_DateConfirmed2.ygrid.visible = False
+p_DateConfirmed2.xgrid.visible = False
+p_DateConfirmed2.ygrid.visible = False
+
+hover = HoverTool()
+hover.tooltips = """
+    <div>
+        <h3>@months</h3>
+        <div><strong>확진: </strong>@confirmed</div>
+    </div>
+"""
+p_DateConfirmed2.add_tools(hover)
 
 # ======================= COVID_log finish ==========================
 
@@ -291,6 +306,7 @@ print(df_Company)
 show(layout([p_DateConfirmed], [p_WFH], [toggle1], [p_Restaurant], [p_Credit], [p_DateConfirmed2]))
 
 script_COVID, div_COVID = components(p_DateConfirmed)
+script_COVID2, div_COVID2 = components(p_DateConfirmed2)
 script_WFH, div_WFH = components(p_WFH)
 script_Restaurant, div_Restaurant = components(p_Restaurant)
 script_Credit, div_Credit = components(p_Credit)
