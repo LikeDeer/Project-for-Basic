@@ -92,21 +92,152 @@ def card_linear() :
               ,line_fitter11.intercept_,line_fitter12.intercept_,line_fitter13.intercept_],
                'coef':[line_fitter1.coef_,line_fitter2.coef_,line_fitter3.coef_,line_fitter4.coef_,line_fitter5.coef_,line_fitter6.coef_,
                line_fitter7.coef_,line_fitter8.coef_,line_fitter9.coef_,line_fitter10.coef_,line_fitter11.coef_,line_fitter12.coef_,line_fitter13.coef_]})
- 
- return df
+
+#2018-1분기 재무재표 dataframe을 return해주는 함수입니다.
+#try :
+#    qs18_1('eg')
+#except :
+#    print("상장되지 않은 회사입니다.")
+#이런식으로 예외처리를 함수를 실행하는 부분에서 진행해야합니다.
+#각 년도와 분기별로 모든 함수와 dataframe을 분리해놨습니다. 필요하다면 합쳐드릴 수 있습니다.
 
 def qs18_1(company):
  url = "http://34.64.187.187:1337/18-1-qs?Com="
- r_qs18_1 = requests.get(url+company)
- list_qs18_1 = r_qs18_1.json()
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
 
- df_qs18_1_pre = pd.DataFrame(list_qs18_1)
- df_qs18_1 = df_qs18_1_pre.iloc[:,[0,2, 3, 4]]
- print(df_qs18_1)
- return df_qs18_1
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
 
+def qs18_2(company):
+ url = "http://34.64.187.187:1337/18-2-qs?Com="
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
 
-try :
-    qs18_1('eg')
-except :
-    print("상장되지 않은 회사입니다.")
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
+
+def qs18_3(company):
+ url = "http://34.64.187.187:1337/18-3-qs?Com="
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
+
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
+
+def qs18_4(company):
+ url = "http://34.64.187.187:1337/18-4-qs?Com="
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
+
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
+
+def qs19_1(company):
+ url = "http://34.64.187.187:1337/19-1-qs?Com="
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
+
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
+
+def qs19_2(company):
+ url = "http://34.64.187.187:1337/19-2-qs?Com="
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
+
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
+
+def qs19_3(company):
+ url = "http://34.64.187.187:1337/19-3-qs?Com="
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
+
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
+
+def qs19_4(company):
+ url = "http://34.64.187.187:1337/19-4-qs?Com="
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
+
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
+
+def qs20_1(company):
+ url = "http://34.64.187.187:1337/20-1-qs?Com="
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
+
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
+
+def qs20_2(company):
+ url = "http://34.64.187.187:1337/20-2-qs?Com="
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
+
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
+
+def qs20_3(company):
+ url = "http://34.64.187.187:1337/20-3-qs?Com="
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
+
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
+
+def qs20_4(company):
+ url = "http://34.64.187.187:1337/20-4-qs?Com="
+ r_qs = requests.get(url+company)
+ list_qs = r_qs.json()
+
+ df_qs_pre = pd.DataFrame(list_qs)
+ df_qs = df_qs_pre.iloc[:,[2, 3, 4]]
+ 
+ return df_qs
+
+#월별 확진자 수입니다
+def covid_monthly():
+ r = requests.get("http://34.64.187.187:1337/covids?")
+ list_c = r.json()
+ df_pre = pd.DataFrame(list_c)
+ df = df_pre.iloc[:,[1, 2]]
+ 
+ return df
+
+#재택지수입니다 week_n_o는 weekend not home이고 뒤에도 이방식입니다
+def house():
+ r = requests.get("http://34.64.187.187:1337/homes?")
+ list_c = r.json()
+ df_pre = pd.DataFrame(list_c)
+ df = df_pre.iloc[:,[1, 2, 3, 4, 5, 6, 7, 8]]
+ print(df)
+ 
+ return 0
+
+house()
