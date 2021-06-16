@@ -41,12 +41,9 @@ conf_data = {'conf_num': df_conf['confirmed'], 'conf_date': conf_date}
 source = ColumnDataSource(data=conf_data)
 
 p_DateConfirmed = figure(
-    sizing_mode="stretch_width",
-    max_width=500,
-    plot_height=250,
+    sizing_mode="stretch_both",
     x_axis_type="datetime",
-    toolbar_location=None,
-    tools=''
+    toolbar_location='above',
 )
 styling_axis(p_DateConfirmed)
 
@@ -73,9 +70,8 @@ source = ColumnDataSource(data=conf2_data)
 p_DateConfirmed2 = figure(
     y_range=y,
     x_range=(0, 1000),
-    sizing_mode="stretch_width",
-    toolbar_location=None,
-    tools=''
+    sizing_mode="stretch_both",
+    toolbar_location='above',
 )
 styling_axis(p_DateConfirmed2)
 
@@ -132,12 +128,9 @@ source1 = ColumnDataSource(data=WFH_COVID_data)
 
 p_WFH = figure(
     y_range=(0.35, 0.8),
-    sizing_mode="stretch_width",
-    max_width=500,
-    plot_height=250,
+    sizing_mode="stretch_both",
     x_axis_type="datetime",
-    toolbar_location=None,
-    tools=''
+    toolbar_location='above',
 )
 styling_axis(p_WFH)
 p_WFH.add_layout(Legend(), 'right')
@@ -185,12 +178,9 @@ p_WFH.legend.click_policy = "hide"
 
 p_WFH2 = figure(
     y_range=(0.4, 0.5),
-    sizing_mode="stretch_width",
-    max_width=500,
-    plot_height=250,
+    sizing_mode="stretch_both",
     x_axis_type="datetime",
-    toolbar_location=None,
-    tools=''
+    toolbar_location='above',
 )
 styling_axis(p_WFH2)
 p_WFH2.add_layout(Legend(), 'right')
@@ -255,10 +245,8 @@ Restaurant_sales = [13.2, 12.3, 11.3, 13.4, 16.2, 14.2]
 
 p_Restaurant = figure(
     x_range=Restaurant_month,
-    max_width=500,
-    plot_height=250,
-    toolbar_location=None,
-    tools=''
+    sizing_mode="stretch_both",
+    toolbar_location='above'
 )
 styling_axis(p_Restaurant)
 p_Restaurant.yaxis.axis_label = 'Restaurant'
@@ -324,7 +312,7 @@ del df_Credit1_columns[0]
 source = ColumnDataSource(data=df_Credit1)
 
 p_Credit = figure(
-    sizing_mode="stretch_width",
+    sizing_mode="stretch_both",
     toolbar_location='below',
     tools="pan,wheel_zoom,box_zoom,reset",
     x_axis_label="COVID-19 확진",
