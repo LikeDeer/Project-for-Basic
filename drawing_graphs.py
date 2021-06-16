@@ -336,6 +336,36 @@ p_Credit.legend.click_policy = "hide"
 
 p_Credit.toolbar_location = 'above'
 
+x = df_Credit2['coef'].values.tolist()
+for i in range(len(x)):
+    x[i] = abs(x[i])
+
+linear_data = {
+    'x': x,
+    'y': df_Credit1_columns,
+    'color': Category20_17
+}
+source = ColumnDataSource(linear_data)
+p_Credit2 = figure(
+    y_range=df_Credit1_columns,
+    x_range=(0, 0.5),
+    sizing_mode="stretch_both",
+    toolbar_location='above',
+)
+
+styling_axis(p_Credit2)
+
+p_Credit2.hbar(
+    y=dodge('y', -0.25, range=p_Credit2.y_range),
+    right='x',
+    height=0.3,
+    source=source,
+    color='color',
+)
+
+p_Credit2.xgrid.visible = False
+p_Credit2.ygrid.visible = False
+
 # ======================= Credit finish ============================
 
 # ======================= company ==================================
@@ -361,7 +391,7 @@ data_table_EG = DataTable(
 
 # ======================= company finish ===========================
 
-show(layout([p_DateConfirmed, p_DateConfirmed2], [p_WFH, p_WFH2], [p_Restaurant], [p_Credit], [data_table_EG]))
+show(layout([p_DateConfirmed, p_DateConfirmed2], [p_WFH, p_WFH2], [p_Restaurant], [p_Credit], [data_table_EG], [p_Credit2]))
 
 script_COVID, div_COVID = components(p_DateConfirmed)
 script_COVID2, div_COVID2 = components(p_DateConfirmed2)
@@ -369,6 +399,7 @@ script_WFH, div_WFH = components(p_WFH)
 script_Restaurant, div_Restaurant = components(p_Restaurant)
 script_Credit, div_Credit = components(p_Credit)
 script_DataTable_EG, div_DataTable_EG = components(data_table_EG)
+script_p_Credit2, div_p_Credit2 = components(p_Credit2)
 
 # @app.route('/covid', methods=["GET", "POST"])
 # def covid():
